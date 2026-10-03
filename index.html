@@ -1,36 +1,66 @@
 <!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>My Project</title></head>
+<title>My Project</title>
+<style>
+  body{font-family:sans-serif;max-width:480px;margin:40px auto;padding:0 16px;text-align:center}
+  .page{display:none} .page.active{display:block}
+  button{padding:10px 24px;font-size:16px;margin-top:12px}
+</style></head>
 <body>
-  <h2>My Project</h2>
-  <input id="name" placeholder="Name">
-  <input id="value" type="number" placeholder="Value">
-  <button onclick="calc()">Calculate</button>
-  <button onclick="save()">Save</button>
-  <p id="out"></p>
+
+<div id="home" class="page active">
+  <h2>Home</h2>
+  <input id="name" placeholder="Your name"><br>
+  <button id="go" onclick="enter()">Start</button>
+  <p id="msg"></p>
+</div>
+
+<div id="page2_1" class="page">
+  <h2>Page 2.1 (even)</h2>
+  <p>Your entry number: <b class="num"></b></p>
+  <button onclick="show('page3')">Next</button>
+</div>
+
+<div id="page2_2" class="page">
+  <h2>Page 2.2 (odd)</h2>
+  <p>Your entry number: <b class="num"></b></p>
+  <button onclick="show('page3')">Next</button>
+</div>
+
+<div id="page3" class="page">
+  <h2>Page 3</h2>
+  <p>Thank you! You were entry <b class="num"></b>.</p>
+</div>
 
 <script>
 const API = 'https://script.google.com/macros/s/AKfycbw1dENtYYCJuwYAp2uewY7ThzTqkQtZrs4hti5vWsb8FF362TgRcu0CIXfs7A3k3N8XCg/exec';
-let result = '';
 
-function calc() {
-  const v = Number(document.getElementById('value').value);
-  result = v * 2;
-  document.getElementById('out').textContent = 'Result: ' + result;
+function show(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
 }
 
-async function save() {
-  const body = JSON.stringify({
-    name: document.getElementById('name').value,
-    value: document.getElementById('value').value,
-    result: result
-  });
-  document.getElementById('out').textContent = 'Saving...';
+function setNum(n) {
+  document.querySelectorAll('.num').forEach(el => el.textContent = n);
+}
+
+async function enter() {
+  const btn = document.getElementById('go');
+  const msg = document.getElementById('msg');
+  btn.disabled = true; msg.textContent = 'Please wait...';
   try {
-    await fetch(API, { method:'POST', body, headers:{'Content-Type':'text/plain'} });
-    document.getElementById('out').textContent = 'Saved!';
+    const r = await fetch(API, {
+      method: 'POST',
+      headers: {'Content-Type': 'text/plain'},
+      body: JSON.stringify({name: document.getElementById('name').value})
+    });
+    const j = await r.json();
+    if (j.status !== 'ok') throw new Error(j.msg);
+    setNum(j.entry);
+    show(j.page);
   } catch (e) {
-    document.getElementById('out').textContent = 'Error: ' + e;
+    msg.textContent = 'Error: ' + e.message;
+    btn.disabled = false;
   }
 }
 </script>
