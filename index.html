@@ -1,68 +1,304 @@
 <!DOCTYPE html>
-<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>My Project</title>
+<html lang="ar" dir="rtl"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Supermarket</title>
 <style>
-  body{font-family:sans-serif;max-width:480px;margin:40px auto;padding:0 16px;text-align:center}
-  .page{display:none} .page.active{display:block}
-  button{padding:10px 24px;font-size:16px;margin-top:12px}
+:root{--g:#16a34a;--gd:#15803d;--bg:#f3f6f4;--tx:#1f2937;--mu:#6b7280;--r:16px}
+*{box-sizing:border-box}
+body{margin:0;font-family:Tahoma,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--tx)}
+#lang{position:fixed;bottom:12px;left:12px;z-index:50;background:#fff;border:1px solid #d1d5db;border-radius:20px;padding:6px 14px;cursor:pointer;box-shadow:0 2px 6px #0002}
+.bar{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 16px;background:#fff;box-shadow:0 2px 10px #0001}
+.brand{background:var(--g);color:#fff;border:0;border-radius:12px;padding:10px 18px;font-size:18px;font-weight:700;cursor:pointer}
+.stats{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.chip{background:#ecfdf5;border-radius:20px;padding:8px 14px;font-size:15px}
+.chip.warn{background:#fee2e2;color:#b91c1c;animation:bl 1s infinite}
+@keyframes bl{50%{opacity:.5}}
+.cartbtn{position:relative;background:#fff;border:2px solid var(--g);border-radius:12px;padding:8px 14px;font-size:18px;cursor:pointer}
+.badge{background:var(--g);color:#fff;border-radius:10px;padding:1px 8px;font-size:13px;margin-inline-start:4px}
+main{max-width:980px;margin:0 auto;padding:20px 16px 70px}
+.card{background:#fff;border-radius:var(--r);padding:24px;box-shadow:0 4px 18px #0001;margin-bottom:16px}
+h1,h2{margin-top:0}
+.btn{background:var(--g);color:#fff;border:0;border-radius:12px;padding:12px 28px;font-size:17px;cursor:pointer;margin:6px 4px}
+.btn:hover{background:var(--gd)} .btn.sec{background:#e5e7eb;color:var(--tx)}
+.btn:disabled{background:#d1d5db;color:#9ca3af;cursor:not-allowed}
+.center{text-align:center}
+label{display:block;margin:14px 0;font-weight:600}
+input[type=text],select{width:100%;margin-top:6px;padding:12px;border:1px solid #d1d5db;border-radius:10px;font-size:16px;background:#fff}
+.q{padding:14px 0;border-bottom:1px solid #eee}
+.opt{display:block;font-weight:400;margin:8px 0;padding:10px 12px;border:1px solid #e5e7eb;border-radius:10px;cursor:pointer}
+.opt:hover{background:#f0fdf4}
+.qimg{width:100%;max-width:420px;border-radius:12px;display:block;margin:8px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+.cat{background:#fff;border-radius:var(--r);padding:26px 12px;text-align:center;cursor:pointer;box-shadow:0 4px 14px #0001;border:2px solid transparent;transition:.15s;position:relative}
+.cat:hover{transform:translateY(-3px);border-color:var(--g)}
+.cat .em{font-size:56px}.cat h3{margin:8px 0 4px}
+.cat.done{border-color:var(--g);background:#f0fdf4}
+.cat small{color:var(--gd)}
+.dis{opacity:.45;pointer-events:none;filter:grayscale(1)}
+.prod{background:#fff;border-radius:var(--r);overflow:hidden;box-shadow:0 4px 14px #0001;display:flex;flex-direction:column;border:2px solid transparent}
+.prod.sel{border-color:var(--g)}
+.ph{position:relative;height:160px;background:#e8f5ec;display:flex;align-items:center;justify-content:center;font-size:64px}
+.ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pb{padding:14px;display:flex;flex-direction:column;gap:8px;flex:1}
+.price{font-size:20px;font-weight:700;color:var(--gd)}
+.prod .btn{margin:0;width:100%;padding:10px}
+.prod.off{opacity:.5}
+.crow{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid #eee}
+.crow .ph{width:80px;height:64px;font-size:30px;border-radius:10px;overflow:hidden;flex:none}
+.crow .nm{flex:1}
+.x{background:#fee2e2;color:#b91c1c;border:0;border-radius:10px;padding:8px 14px;cursor:pointer}
+.sum{display:flex;justify-content:space-between;font-size:18px;padding:8px 0}
+.overlay{position:fixed;inset:0;background:#0006;z-index:30;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal{background:#fff;border-radius:var(--r);padding:28px;max-width:440px;text-align:center}
+.toast{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 20px;border-radius:20px;z-index:60}
+.banner{background:#fef3c7;border-radius:12px;padding:12px;margin-bottom:12px}
+.err{color:#b91c1c}
+.back{background:none;border:0;color:var(--gd);font-size:16px;cursor:pointer;margin-bottom:10px}
 </style></head>
 <body>
-
-<div id="home" class="page active">
-  <h2>Home</h2>
-  <input id="name" placeholder="Your name"><br>
-  <button id="go" onclick="enter()">Start</button>
-  <p id="msg"></p>
-</div>
-
-<div id="page2_1" class="page">
-  <h2>Page 2.1 (even)</h2>
-  <p>Your entry number: <b class="num"></b></p>
-  <button onclick="show('page3')">Next</button>
-</div>
-
-<div id="page2_2" class="page">
-  <h2>Page 2.2 (odd)</h2>
-  <p>Your entry number: <b class="num"></b></p>
-  <button onclick="show('page3')">Next</button>
-</div>
-
-<div id="page3" class="page">
-  <h2>Page 3</h2>
-  <p>Thank you! You were entry <b class="num"></b>.</p>
-</div>
+<button id="lang" onclick="toggleLang()">EN / عربي</button>
+<div id="app"></div>
 
 <script>
-const API = 'https://script.google.com/macros/s/AKfycbx3Kd0iGuTQC6K4-DBlN3hscRFGoBXvC7_iLumJGH-ZYPp-LnkAdPtHG7NV7utt3-jj_Q/exec';
-             
+const API = 'https://script.google.com/macros/s/AKfycby8Xn_G0LsuWCIHsQWxyageV0Dquc8CA9igCC_7urMWFaJ9Sgagy4iyiQqizBQ2mbvclg/exec';
+const BUDGET = 150, MAX = 3, TIMER_SECONDS = 300;
 
-function show(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+const TXT = {
+ar:{brand:'السوبر ماركت',yes:'نعم',no:'لا',next:'التالي',loading:'يرجى الانتظار...',
+ welcomeTitle:'مرحباً بك',welcomeText:'هنا نص الموافقة على المشاركة (استبدله بنصك). هل توافق على المشاركة في هذه الدراسة؟',
+ declinedTitle:'شكراً لك',declinedText:'تم إنهاء المشاركة. يمكنك إغلاق هذه الصفحة.',
+ profileTitle:'المعلومات الشخصية',introTitle:'المتجر الإلكتروني',
+ introText:'ستقوم بالتسوق من المتجر. اختر 3 منتجات من 3 فئات مختلفة ضمن ميزانية محددة. سيبدأ المؤقت بعد الموافقة. هل توافق على البدء؟',
+ budget:'المتبقي',sar:'ر.س',cart:'السلة',cartTitle:'سلة التسوق',cartEmpty:'السلة فارغة',remove:'إلغاء',
+ total:'المجموع',remaining:'المتبقي من الميزانية',finish:'انتهت مهمة التسوق',finishHint:'اختر 3 منتجات من 3 فئات مختلفة لإنهاء المهمة.',
+ add:'أضف إلى السلة',inCart:'في السلة - إلغاء',locked:'تم الاختيار من هذه الفئة',over:'يتجاوز الميزانية',full:'اكتمل العدد',
+ backCats:'العودة للفئات',pickCat:'اختر الفئة',chosen:'تم اختيار',surveyTitle:'الاستبيان الأخير',submit:'إرسال',
+ thanksTitle:'شكراً لمشاركتك',thanksText:'تم حفظ إجاباتك بنجاح.',timeUp:'انتهى الوقت! سيتم حفظ ما اخترته.',err:'حدث خطأ، حاول مرة أخرى',select:'اختر...',keepCart:'متابعة التسوق'},
+en:{brand:'Supermarket',yes:'Yes',no:'No',next:'Next',loading:'Please wait...',
+ welcomeTitle:'Welcome',welcomeText:'Consent text goes here (replace with yours). Do you agree to take part in this study?',
+ declinedTitle:'Thank you',declinedText:'Participation ended. You can close this page.',
+ profileTitle:'Personal information',introTitle:'Online store',
+ introText:'You will shop in the store. Pick 3 products from 3 different categories within a set budget. The timer starts after you agree. Do you agree to start?',
+ budget:'Left',sar:'SAR',cart:'Cart',cartTitle:'Shopping cart',cartEmpty:'Your cart is empty',remove:'Cancel',
+ total:'Total',remaining:'Budget remaining',finish:'Shopping task finished',finishHint:'Pick 3 products from 3 different categories to finish.',
+ add:'Add to cart',inCart:'In cart - cancel',locked:'Category already used',over:'Over budget',full:'Cart is full',
+ backCats:'Back to categories',pickCat:'Choose a category',chosen:'Selected',surveyTitle:'Final survey',submit:'Submit',
+ thanksTitle:'Thank you',thanksText:'Your answers were saved.',timeUp:'Time is up! Your current choices will be saved.',err:'Something went wrong, try again',select:'Select...',keepCart:'Keep shopping'}
+};
+
+const CATS = [
+ {id:'dairy',ar:'الألبان',en:'Dairy',em:'🥛'},
+ {id:'meat',ar:'اللحوم',en:'Meat',em:'🥩'},
+ {id:'cheese',ar:'الأجبان',en:'Cheese',em:'🧀'},
+ {id:'chips',ar:'الشيبس',en:'Chips',em:'🍟'},
+ {id:'choc',ar:'الشوكولاتة',en:'Chocolate',em:'🍫'}
+];
+// p = price in group 1,2,3
+const ITEMS = [
+ {id:'d1',cat:'dairy',n:'Almarai Milk 2L',p:[12,15,10]},
+ {id:'d2',cat:'dairy',n:'Nadec Yogurt Pack',p:[18,14,22]},
+ {id:'d3',cat:'dairy',n:'Danone Pack',p:[25,30,20]},
+ {id:'d4',cat:'dairy',n:'Al Safi Laban 2L',p:[14,11,16]},
+ {id:'m1',cat:'meat',n:'Tanmiah Chicken 1kg',p:[32,38,28]},
+ {id:'m2',cat:'meat',n:'Sadia Frozen Chicken',p:[45,40,52]},
+ {id:'m3',cat:'meat',n:'Halwani Beef Burger',p:[75,68,82]},
+ {id:'m4',cat:'meat',n:'Al Watania Nuggets',p:[36,42,33]},
+ {id:'c1',cat:'cheese',n:'Kiri Cheese Squares',p:[20,24,18]},
+ {id:'c2',cat:'cheese',n:'Puck Cream Cheese',p:[16,19,14]},
+ {id:'c3',cat:'cheese',n:'Almarai Mozzarella',p:[28,33,25]},
+ {id:'c4',cat:'cheese',n:'President Camembert',p:[38,35,44]},
+ {id:'p1',cat:'chips',n:"Lays Classic",p:[6,8,5]},
+ {id:'p2',cat:'chips',n:'Pringles Original',p:[15,18,13]},
+ {id:'p3',cat:'chips',n:'Doritos Nacho',p:[7,9,6]},
+ {id:'p4',cat:'chips',n:'Cheetos Crunchy',p:[5,7,4]},
+ {id:'k1',cat:'choc',n:'Galaxy Bar',p:[9,11,8]},
+ {id:'k2',cat:'choc',n:'Snickers Box',p:[30,26,34]},
+ {id:'k3',cat:'choc',n:'KitKat Pack',p:[22,25,19]},
+ {id:'k4',cat:'choc',n:'Cadbury Dairy Milk',p:[12,10,14]}
+];
+const byId = Object.fromEntries(ITEMS.map(i=>[i.id,i]));
+const catOf = Object.fromEntries(CATS.map(c=>[c.id,c]));
+// Replace this to use your own photos, e.g. return 'images/'+it.id+'-g'+S.group+'.jpg'
+function imgSrc(it){ return 'https://picsum.photos/seed/'+it.id+'-g'+S.group+'/480/360'; }
+
+const PROFILE = [
+ {k:'age',type:'select',label:{ar:'العمر',en:'Age'},opts:[['18-24','18-24'],['25-34','25-34'],['35-44','35-44'],['45+','45+']]},
+ {k:'gender',type:'select',label:{ar:'الجنس',en:'Gender'},opts:[['ذكر','Male'],['أنثى','Female']]},
+ {k:'city',type:'text',label:{ar:'المدينة',en:'City'}},
+ {k:'edu',type:'select',label:{ar:'المستوى التعليمي',en:'Education'},opts:[['ثانوي','High school'],['بكالوريوس','Bachelor'],['دراسات عليا','Postgraduate']]},
+ {k:'freq',type:'select',label:{ar:'عدد مرات التسوق أسبوعياً',en:'Shopping times per week'},opts:[['1-2','1-2'],['3-4','3-4'],['5+','5+']]}
+];
+const LIK = [['موافق بشدة','Strongly agree'],['موافق','Agree'],['محايد','Neutral'],['غير موافق','Disagree'],['غير موافق بشدة','Strongly disagree']];
+const SURVEY = [
+ {q:{ar:'سؤال 1 (نص مؤقت): كان المتجر سهل الاستخدام',en:'Question 1 (placeholder): The store was easy to use'},opts:LIK},
+ {q:{ar:'سؤال 2 (نص مؤقت): الأسعار كانت مناسبة',en:'Question 2 (placeholder): Prices were reasonable'},opts:LIK},
+ {q:{ar:'سؤال 3 (نص مؤقت): وجدت المنتجات التي أريدها',en:'Question 3 (placeholder): I found the products I wanted'},opts:LIK},
+ {q:{ar:'سؤال 4 (نص مؤقت): الوقت كان كافياً',en:'Question 4 (placeholder): The time was enough'},opts:LIK},
+ {q:{ar:'سؤال 5 (نص مؤقت): سأتسوق من هذا المتجر مجدداً',en:'Question 5 (placeholder): I would shop here again'},opts:LIK},
+ {q:{ar:'سؤال 6 (نص مؤقت): ماذا ترى في الصورة؟',en:'Question 6 (placeholder): What do you see in the picture?'},
+  img:'https://picsum.photos/seed/survey6/420/280',
+  opts:[['الخيار أ','Option A'],['الخيار ب','Option B'],['الخيار ج','Option C'],['الخيار د','Option D']]}
+];
+
+const S = {lang:'ar',screen:'consent',profile:{},ans:[],group:0,token:'',cart:[],cat:null,
+           started:false,finished:false,t0:0,seconds:0,timedOut:false,notice:'',busy:false,err:''};
+const t = k => TXT[S.lang][k];
+const L = o => o[S.lang];
+const idx = () => S.lang==='ar'?0:1;
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+const total = () => S.cart.reduce((s,id)=>s+byId[id].p[S.group-1],0);
+const fmt = s => String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+
+function go(s){ S.screen=s; S.err=''; render(); window.scrollTo(0,0); }
+function toggleLang(){ S.lang = S.lang==='ar'?'en':'ar'; render(); }
+function toast(m){ const d=document.createElement('div'); d.className='toast'; d.textContent=m; document.body.appendChild(d); setTimeout(()=>d.remove(),2200); }
+
+function header(){
+  const left = BUDGET - total();
+  return `<header class="bar">
+   <button class="brand" onclick="goCats()">🛒 ${t('brand')}</button>
+   <div class="stats">
+    <span class="chip">⏱ <b id="timer">${fmt(TIMER_SECONDS)}</b></span>
+    <span class="chip">💰 ${t('budget')}: <b>${left}</b> ${t('sar')}</span>
+    <button class="cartbtn" onclick="openCart()">🧺<span class="badge">${S.cart.length}/${MAX}</span></button>
+   </div></header>`;
+}
+function goCats(){ if(S.started) go('cats'); }
+function openCart(){ if(S.started && !S.finished) go('cart'); }
+
+function phHTML(it){ return `<div class="ph">${catOf[it.cat].em}<img src="${imgSrc(it)}" loading="lazy" onerror="this.style.display='none'"></div>`; }
+
+const SCREENS = {
+ consent(){ return `<main><div class="card center"><h1>${t('welcomeTitle')}</h1><p>${t('welcomeText')}</p>
+   <button class="btn" onclick="go('profile')">${t('yes')}</button>
+   <button class="btn sec" onclick="go('declined')">${t('no')}</button></div></main>`; },
+ declined(){ return `<main><div class="card center"><h1>${t('declinedTitle')}</h1><p>${t('declinedText')}</p></div></main>`; },
+ profile(){
+   const f = PROFILE.map(f=>{
+     const v = S.profile[f.k]||'';
+     if(f.type==='text') return `<label>${L(f.label)}<input type="text" value="${esc(v)}" oninput="setP('${f.k}',this.value)"></label>`;
+     return `<label>${L(f.label)}<select onchange="setP('${f.k}',this.value)"><option value="">${t('select')}</option>
+       ${f.opts.map(o=>`<option value="${o[1]}" ${v===o[1]?'selected':''}>${o[idx()]}</option>`).join('')}</select></label>`;
+   }).join('');
+   return `<main><div class="card"><h2>${t('profileTitle')}</h2>${f}
+     <p class="err">${S.err}</p>
+     <div class="center"><button id="nextBtn" class="btn" onclick="toStore()" disabled>${t('next')}</button></div></div></main>`;
+ },
+ intro(){ return header() + `<main><div class="grid dis">${CATS.map(c=>`<div class="cat"><div class="em">${c.em}</div><h3>${L(c)}</h3></div>`).join('')}</div></main>
+   <div class="overlay"><div class="modal"><h2>${t('introTitle')}</h2><p>${t('introText')}</p>
+   <button class="btn" onclick="startShop()">${t('yes')}</button>
+   <button class="btn sec" onclick="declineShop()">${t('no')}</button></div></div>`; },
+ cats(){
+   return header() + `<main><h2>${t('pickCat')}</h2><div class="grid">${CATS.map(c=>{
+     const sel = S.cart.map(id=>byId[id]).find(i=>i.cat===c.id);
+     return `<div class="cat ${sel?'done':''}" onclick="openCat('${c.id}')"><div class="em">${c.em}</div><h3>${L(c)}</h3>
+       ${sel?`<small>✓ ${sel.n}</small>`:''}</div>`;}).join('')}</div></main>`;
+ },
+ products(){
+   const c = catOf[S.cat];
+   const cards = ITEMS.filter(i=>i.cat===S.cat).map(it=>{
+     const p = it.p[S.group-1], inC = S.cart.includes(it.id);
+     const taken = !inC && S.cart.some(id=>byId[id].cat===it.cat);
+     const over = !inC && !taken && total()+p>BUDGET;
+     const full = !inC && !taken && !over && S.cart.length>=MAX;
+     const off = taken||over||full;
+     const label = inC?t('inCart'):taken?t('locked'):over?t('over'):full?t('full'):t('add');
+     return `<div class="prod ${inC?'sel':''} ${off?'off':''}">${phHTML(it)}<div class="pb"><b>${it.n}</b>
+       <span class="price">${p} ${t('sar')}</span>
+       <button class="btn ${inC?'sec':''}" ${off?'disabled':''} onclick="toggleItem('${it.id}')">${label}</button></div></div>`;
+   }).join('');
+   return header() + `<main><button class="back" onclick="go('cats')">← ${t('backCats')}</button><h2>${c.em} ${L(c)}</h2><div class="grid">${cards}</div></main>`;
+ },
+ cart(){
+   const rows = S.cart.map(id=>{ const it=byId[id]; return `<div class="crow">${phHTML(it)}<div class="nm"><b>${it.n}</b><br><small>${L(catOf[it.cat])}</small></div>
+     <b>${it.p[S.group-1]} ${t('sar')}</b><button class="x" onclick="toggleItem('${id}',true)">${t('remove')}</button></div>`; }).join('');
+   const ready = S.cart.length===MAX;
+   return header() + `<main><div class="card"><h2>🧺 ${t('cartTitle')}</h2>${rows||`<p>${t('cartEmpty')}</p>`}
+     <div class="sum"><span>${t('total')}</span><b>${total()} ${t('sar')}</b></div>
+     <div class="sum"><span>${t('remaining')}</span><b>${BUDGET-total()} ${t('sar')}</b></div>
+     ${ready?'':`<p style="color:var(--mu)">${t('finishHint')}</p>`}
+     <div class="center"><button class="btn sec" onclick="go('cats')">${t('keepCart')}</button>
+     <button class="btn" ${ready?'':'disabled'} onclick="finishShop()">${t('finish')}</button></div></div></main>`;
+ },
+ survey(){
+   const qs = SURVEY.map((q,i)=>`<div class="q"><b>${L(q.q)}</b>${q.img?`<img class="qimg" src="${q.img}">`:''}
+     ${q.opts.map((o,j)=>`<label class="opt"><input type="radio" name="q${i}" ${S.ans[i]===j?'checked':''} onchange="setA(${i},${j})"> ${o[idx()]}</label>`).join('')}</div>`).join('');
+   const nt = S.notice?`<div class="banner">${S.notice}</div>`:'';
+   return `<main><div class="card"><h2>${t('surveyTitle')}</h2>${nt}${qs}<p class="err">${S.err}</p>
+     <div class="center"><button id="nextBtn" class="btn" onclick="submitAll()" disabled>${t('submit')}</button></div></div></main>`;
+ },
+ done(){ return `<main><div class="card center"><h1>✅ ${t('thanksTitle')}</h1><p>${t('thanksText')}</p></div></main>`; }
+};
+
+function render(){
+  document.documentElement.lang=S.lang; document.documentElement.dir=S.lang==='ar'?'rtl':'ltr';
+  document.getElementById('app').innerHTML = SCREENS[S.screen]();
+  refreshNext(); tick();
 }
 
-function setNum(n) {
-  document.querySelectorAll('.num').forEach(el => el.textContent = n);
+function setP(k,v){ S.profile[k]=v; refreshNext(); }
+function setA(i,j){ S.ans[i]=j; refreshNext(); }
+function refreshNext(){
+  const b=document.getElementById('nextBtn'); if(!b) return;
+  let ok=false;
+  if(S.screen==='profile') ok = PROFILE.every(f=>(S.profile[f.k]||'').trim()!=='');
+  if(S.screen==='survey') ok = SURVEY.every((q,i)=>S.ans[i]!==undefined);
+  b.disabled = !ok || S.busy;
 }
 
-async function enter() {
-  const btn = document.getElementById('go');
-  const msg = document.getElementById('msg');
-  btn.disabled = true; msg.textContent = 'Please wait...';
-  try {
-    const r = await fetch(API, {
-      method: 'POST',
-      headers: {'Content-Type': 'text/plain'},
-      body: JSON.stringify({name: document.getElementById('name').value})
-    });
-    const j = await r.json();
-    if (j.status !== 'ok') throw new Error(j.msg);
-    setNum(j.entry);
-    show(j.page);
-  } catch (e) {
-    msg.textContent = 'Error: ' + e.message;
-    btn.disabled = false;
-  }
+async function api(body){
+  const r = await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body)});
+  const j = await r.json();
+  if(j.status!=='ok') throw new Error(j.msg||'error');
+  return j;
 }
+
+async function toStore(){
+  S.busy=true; const b=document.getElementById('nextBtn'); b.disabled=true; b.textContent=t('loading');
+  try{
+    const j = await api({action:'assign',token:sessionStorage.getItem('mk_token')||''});
+    S.token=j.token; S.group=j.group; sessionStorage.setItem('mk_token',j.token);
+    S.busy=false; go('intro');
+  }catch(e){ S.busy=false; S.err=t('err'); render(); }
+}
+
+function startShop(){ S.started=true; S.t0=Date.now(); go('cats'); }
+function declineShop(){ go('consent'); }
+function openCat(id){ S.cat=id; go('products'); }
+
+function toggleItem(id,fromCart){
+  if(S.cart.includes(id)){ S.cart=S.cart.filter(x=>x!==id); render(); return; }
+  S.cart.push(id);
+  if(S.cart.length===MAX){ go('cart'); } else { toast('✓ '+byId[id].n); render(); }
+}
+
+function finishShop(){
+  S.finished=true; S.seconds=Math.min(Math.floor((Date.now()-S.t0)/1000),TIMER_SECONDS);
+  go('survey');
+}
+function timeUp(){
+  S.finished=true; S.timedOut=true; S.seconds=TIMER_SECONDS; S.notice=t('timeUp'); go('survey');
+}
+function tick(){
+  if(!S.started||S.finished) return;
+  const el=Math.floor((Date.now()-S.t0)/1000), rem=Math.max(TIMER_SECONDS-el,0);
+  const e=document.getElementById('timer');
+  if(e){ e.textContent=fmt(rem); e.parentElement.classList.toggle('warn',rem<=30); }
+  if(rem===0) timeUp();
+}
+setInterval(tick,500);
+
+async function submitAll(){
+  S.busy=true; const b=document.getElementById('nextBtn'); b.disabled=true; b.textContent=t('loading');
+  const items = S.cart.map(id=>({cat:catOf[byId[id].cat].en,name:byId[id].n,price:byId[id].p[S.group-1]}));
+  const payload = {action:'submit',token:S.token,group:S.group,
+    profile:PROFILE.map(f=>(S.profile[f.k]||'').trim()),
+    items, total:total(), seconds:S.seconds, timedOut:S.timedOut,
+    survey:SURVEY.map((q,i)=>q.opts[S.ans[i]][1])};
+  try{ await api(payload); sessionStorage.removeItem('mk_token'); S.busy=false; go('done'); }
+  catch(e){ S.busy=false; S.err=t('err'); render(); }
+}
+
+render();
 </script>
 </body></html>
