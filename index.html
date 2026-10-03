@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Project</title></head>
+<body>
+  <h2>My Project</h2>
+  <input id="name" placeholder="Name">
+  <input id="value" type="number" placeholder="Value">
+  <button onclick="calc()">Calculate</button>
+  <button onclick="save()">Save</button>
+  <p id="out"></p>
+
+<script>
+const API = 'https://script.google.com/macros/s/AKfycbw1dENtYYCJuwYAp2uewY7ThzTqkQtZrs4hti5vWsb8FF362TgRcu0CIXfs7A3k3N8XCg/exec';
+let result = '';
+
+function calc() {
+  const v = Number(document.getElementById('value').value);
+  result = v * 2;
+  document.getElementById('out').textContent = 'Result: ' + result;
+}
+
+async function save() {
+  const body = JSON.stringify({
+    name: document.getElementById('name').value,
+    value: document.getElementById('value').value,
+    result: result
+  });
+  document.getElementById('out').textContent = 'Saving...';
+  try {
+    await fetch(API, { method:'POST', body, headers:{'Content-Type':'text/plain'} });
+    document.getElementById('out').textContent = 'Saved!';
+  } catch (e) {
+    document.getElementById('out').textContent = 'Error: ' + e;
+  }
+}
+</script>
+</body></html>
